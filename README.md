@@ -1,5 +1,5 @@
 
-El script de la base de datos se llama sistema_de_puntos.sql para p
+El script de la base de datos se llama sistema_de_puntos.sql
 
 ## Metodos
 
