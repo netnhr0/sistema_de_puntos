@@ -33,18 +33,18 @@ Se presenta las rutas para poder usar la API, estas estan por metodos GET y POST
 Los Datos que estan en la Base de Datos se ocuparon solo para realizar las pruebas:
 
 Comercios (rut(PK), nombre, puntos):
--1111111-1, Evaluacion
--2222222-2, Junior
--3333333-3, Laravel 7
--9999999-9, Persona X
+- (1111111-1, Evaluacion)
+- (2222222-2, Junior)
+- (3333333-3, Laravel 7)
+- (9999999-9, Persona X)
 
 Dispositivos (id_dispositivo(PK), nombre):
--10001, Maquina POS
--10002, Pistola codigo Barra
--10003, Punto de Venta
--10004, Hosting Web
+- (10001, Maquina POS)
+- (10002, Pistola codigo Barra)
+- (10003, Punto de Venta)
+- (10004, Hosting Web)
 
 Ventas (id_venta, rut, id_dispositivo, monto, codigo_seguridad, estado): Aqui señalo el id_venta y codigo_seguridad
--1,7018663274
--4,5626680702
--6,4557314560
+- (1,7018663274)
+- (4,5626680702)
+- (6,4557314560)
