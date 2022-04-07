@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Model\Venta;
 use App\Model\Comercio;
+use App\Model\Dispositivo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -11,43 +12,77 @@ use Illuminate\Support\Facades\Hash;
 class VentaController extends Controller
 {
     
-    public function insertVenta(){
-        $rut = "9999999-9";
-        $id_dispositivo = "1111";
-        $monto = "149000";
-        $code_segurity = $this->code_segurity();
-        $codigo_seguridad = Hash::make($code_segurity);
-        $estado= true;
-        echo "Codigo Seguridad: ".$code_segurity."<br>";
+    public function insertVenta(Request $rq){
+        if (!$rq->rut || !$rq->id_dispositivo || !$rq->monto) {
+            return response()->json(['success'=>false, 'mensaje'=>'Debe ingresar los datos'],422);
+        }else{
+            $rut = $rq->rut;
+            $id_dispositivo = $rq->id_dispositivo;
+            $monto = $rq->monto;
+            $code_segurity = $this->code_segurity();
+            $codigo_seguridad = Hash::make($code_segurity);
+            $estado= true;
 
-        $venta = new Venta();
-        $venta->rut = $rut;
-        $venta->id_dispositivo = $id_dispositivo;
-        $venta->monto = $monto;
-        $venta->codigo_seguridad = $codigo_seguridad;
-        $venta->estado = $estado;
-        if ($venta->save()) {
-            echo "registro";
-            $this->puntosComercio('vendio', $rut);
-        }else {
-            echo "no registro";
+            if (Comercio::where('rut', $rut)->exists()) {
+                if (Dispositivo::where('id_dispositivo', $id_dispositivo)->exists()) {
+                    $venta = new Venta();
+                    $venta->rut = $rut;
+                    $venta->id_dispositivo = $id_dispositivo;
+                    $venta->monto = $monto;
+                    $venta->codigo_seguridad = $codigo_seguridad;
+                    $venta->estado = $estado;
+                    if ($venta->save()) {
+                        $id_venta = Venta::latest('id_venta')->first();
+                        $this->puntosComercio('vendio', $rut);
+                        $dataJSON = [
+                            'success' => true,
+                            'venta' => array(
+                                'id_venta' => $id_venta->id_venta,
+                                'rut' => $rut,
+                                'id_dispositivo' => $id_dispositivo,
+                                'monto' => $monto,
+                                'codigo_seguridad' => $code_segurity
+                            )
+                        ];
+                        return response()->json($dataJSON, 201);
+                    }  
+                }else{
+                    return response()->json(['error'=>500, 'mensaje'=>'El id_dispositivo ingresado No Existe'],500);
+                }     
+            }else{
+                return response()->json(['error'=>500, 'mensaje'=>'El rut ingresado No Existe'],500);
+            }
         }
     }
 
-    public function anularVenta(){
-        $rut = "9999999-9";
-        $ventas = Venta::select('id_venta', 'codigo_seguridad')->where('rut', $rut)->get();
-        
-        foreach ($ventas as $venta) {
-            $id_venta = $venta->id_venta;
-            $codigo_seguridad = $venta->codigo_seguridad;
-            $codes = Hash::check('4295643726', $codigo_seguridad);
-            if ($id_venta == 13 && $codes) {
-                Venta::where('id_venta', $id_venta)->update(['estado' => false]);
-                $this->puntosComercio("anular", $rut);
-                echo "<br>se actualizo";
-            }else{
-                echo "<br>el id_venta y el codigo de Seguridad no son correcto";
+    public function anularVenta(Request $rq){
+        if (!$rq->id_venta || !$rq->codigo_seguridad) {
+            return response()->json(['success'=>false, 'mensaje'=>'Debe ingresar los datos'],422);
+        }else{
+            $ventas = Venta::select('id_venta', 'codigo_seguridad', 'rut')->where('id_venta', $rq->id_venta)->get();
+            
+            foreach ($ventas as $venta) {
+                $id_venta = $venta->id_venta;
+                $codigo_seguridad = $venta->codigo_seguridad;
+                $codes = Hash::check($rq->codigo_seguridad, $codigo_seguridad);
+                if ($id_venta == $rq->id_venta && $codes) {
+                    Venta::where('id_venta', $rq->id_venta)->update(['estado' => false]);
+                    $this->puntosComercio("anular", $venta->rut);
+                    $dataJSON = [
+                        'success'=>true,
+                        'anular' => array(
+                            'id_venta' => $rq->id_venta,
+                            'codigo_seguridad' => $rq->codigo_seguridad
+                        )
+                    ];
+                    return response()->json($dataJSON, 201);
+                }else{
+                    $dataJSON = [
+                        'success'=>false,
+                        'error'=>'400',
+                        'mensaje' => 'El ID venta y el Codigo de Seguridad no son correcto'
+                    ];
+                }
             }
         }
     }
@@ -77,5 +112,18 @@ class VentaController extends Controller
         }
     }
 
-    
+    public function getVentas(){
+        $ventas = DB::select('SELECT * FROM ventas');
+        return response()->json($ventas, 200);
+    }
+
+    public function getVentasRut($rut){
+        if (!$rut) {
+            return response()->json(['success'=>false, 'mensaje'=>'Debe ingresar los datos'],422);
+        }else{
+            $ventas = Venta::select('id_venta', 'id_dispositivo', 'monto', 'estado')->where('rut', $rut)->get();
+            return response()->json($ventas, 200);
+        }
+    }
+
 }

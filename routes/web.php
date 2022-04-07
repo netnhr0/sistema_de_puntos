@@ -13,4 +13,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', 'VentaController@anularVenta');
+//Pruebas en WEB
+// Route::post('/venta/insert', 'VentaController@insertVenta');
+// Route::get('/venta/cancelar', 'VentaController@anularVenta');
