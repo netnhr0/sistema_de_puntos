@@ -17,16 +17,16 @@ En la Clase controladora VentaController hice los siguientes metodos:
 
 Se presenta las rutas para poder usar la API, estas estan por metodos GET y POST. se va a señalar cual corresponde usar:
 
-POST: [direccion servidor]/api/venta/insert         : key[rut, id_dispositivo, monto]
-POST: [direccion servidor]/api/venta/cancelar       : key[id_venta, codigo_seguridad]
-GET:  [direccion servidor]/api/venta
+* POST: [direccion servidor]/api/venta/insert         : key[rut, id_dispositivo, monto]
+* POST: [direccion servidor]/api/venta/cancelar       : key[id_venta, codigo_seguridad]
+* GET:  [direccion servidor]/api/venta
 
-GET:  [direccion servidor]/api/comercio
-POST: [direccion servidor]/api/comercio/insert      : key[rut, nombre]
-GET:  [direccion servidor]/api/comercio/rut/{rut}
+* GET:  [direccion servidor]/api/comercio
+* POST: [direccion servidor]/api/comercio/insert      : key[rut, nombre]
+* GET:  [direccion servidor]/api/comercio/rut/{rut}
 
-POST: [direccion servidor]/api/dispositivo/insert   : key[id_dispositivo, nombre]
-GET:  [direccion servidor]/api/dispositivo
+* POST: [direccion servidor]/api/dispositivo/insert   : key[id_dispositivo, nombre]
+* GET:  [direccion servidor]/api/dispositivo
 
 ## Datos
 
