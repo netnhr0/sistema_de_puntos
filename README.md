@@ -1,61 +1,50 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+El script de la base de datos se llama sistema_de_puntos.sql para p
 
-## About Laravel
+## Metodos
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+En la Clase controladora VentaController hice los siguientes metodos:
+ * code_segurity() para generar el codigo seguro de forma automatica.
+ * puntosComercio($operacion, $rut) para sumar o restar los punto por cada venta o anulacion que realiza el comercio, se recibe 2 parametros de entrada que es la operacion, que seria si vendio o anular para hacer la respectiva operacion(sumar o restar) y el rut es para realizar el update correspondiente a los puntos que obtenga el comercio.
+ * insertVenta() se ingresa la venta a la base de datos y este genera un json para ver los datos ingresados y visualizar el codigo de seguridad, aqui realice un hash para almacenarlo en la base de datos.
+ * anularVenta() aqui es donde realizo el update a estado donde este es un boolean, es para saber que lo anularon o cancelaron la venta.
+ * getVentas() para saber todas las venta que han realizado
+ * getVentasRut($rut) para saber cuantas ventas hizo el rut señalado.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+ En los demas Controladores realice el metodo insert y get, para insertar mas datos y visualizarlos.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Rutas
 
-## Learning Laravel
+Se presenta las rutas para poder usar la API, estas estan por metodos GET y POST. se va a señalar cual corresponde usar:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+POST: [direccion servidor]/api/venta/insert         : key[rut, id_dispositivo, monto]
+POST: [direccion servidor]/api/venta/cancelar       : key[id_venta, codigo_seguridad]
+GET:  [direccion servidor]/api/venta
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+GET:  [direccion servidor]/api/comercio
+POST: [direccion servidor]/api/comercio/insert      : key[rut, nombre]
+GET:  [direccion servidor]/api/comercio/rut/{rut}
 
-## Laravel Sponsors
+POST: [direccion servidor]/api/dispositivo/insert   : key[id_dispositivo, nombre]
+GET:  [direccion servidor]/api/dispositivo
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+## Datos
 
-### Premium Partners
+Los Datos que estan en la Base de Datos se ocuparon solo para realizar las pruebas:
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[OP.GG](https://op.gg)**
+Comercios (rut(PK), nombre, puntos):
+-1111111-1, Evaluacion
+-2222222-2, Junior
+-3333333-3, Laravel 7
+-9999999-9, Persona X
 
-## Contributing
+Dispositivos (id_dispositivo(PK), nombre):
+-10001, Maquina POS
+-10002, Pistola codigo Barra
+-10003, Punto de Venta
+-10004, Hosting Web
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Ventas (id_venta, rut, id_dispositivo, monto, codigo_seguridad, estado): Aqui señalo el id_venta y codigo_seguridad
+-1,7018663274
+-4,5626680702
+-6,4557314560

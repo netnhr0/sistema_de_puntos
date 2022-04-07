@@ -25,27 +25,31 @@ class VentaController extends Controller
 
             if (Comercio::where('rut', $rut)->exists()) {
                 if (Dispositivo::where('id_dispositivo', $id_dispositivo)->exists()) {
-                    $venta = new Venta();
-                    $venta->rut = $rut;
-                    $venta->id_dispositivo = $id_dispositivo;
-                    $venta->monto = $monto;
-                    $venta->codigo_seguridad = $codigo_seguridad;
-                    $venta->estado = $estado;
-                    if ($venta->save()) {
-                        $id_venta = Venta::latest('id_venta')->first();
-                        $this->puntosComercio('vendio', $rut);
-                        $dataJSON = [
-                            'success' => true,
-                            'venta' => array(
-                                'id_venta' => $id_venta->id_venta,
-                                'rut' => $rut,
-                                'id_dispositivo' => $id_dispositivo,
-                                'monto' => $monto,
-                                'codigo_seguridad' => $code_segurity
-                            )
-                        ];
-                        return response()->json($dataJSON, 201);
-                    }  
+                    if (is_numeric($rq->monto)) {                    
+                        $venta = new Venta();
+                        $venta->rut = $rut;
+                        $venta->id_dispositivo = $id_dispositivo;
+                        $venta->monto = $monto;
+                        $venta->codigo_seguridad = $codigo_seguridad;
+                        $venta->estado = $estado;
+                        if ($venta->save()) {
+                            $id_venta = Venta::latest('id_venta')->first();
+                            $this->puntosComercio('vendio', $rut);
+                            $dataJSON = [
+                                'success' => true,
+                                'venta' => array(
+                                    'id_venta' => $id_venta->id_venta,
+                                    'rut' => $rut,
+                                    'id_dispositivo' => $id_dispositivo,
+                                    'monto' => $monto,
+                                    'codigo_seguridad' => $code_segurity
+                                )
+                            ];
+                            return response()->json($dataJSON, 201);
+                        } 
+                    }else{
+                        return response()->json(['mensaje'=>'El monto ingresado no es numerico'], 500);
+                    }
                 }else{
                     return response()->json(['error'=>500, 'mensaje'=>'El id_dispositivo ingresado No Existe'],500);
                 }     
