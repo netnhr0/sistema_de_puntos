@@ -13,4 +13,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', 'VentaController@insertVenta');
+Route::get('/', 'VentaController@anularVenta');
